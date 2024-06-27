@@ -6,53 +6,49 @@ from ultralytics import YOLO
 model = YOLO("cabra_best.pt")
 
 
-def predict_video(video_path):
-    # Perform object detection on the video
-    cap = cv2.VideoCapture(video_path)
-
-    frame_count = 0  # Initialize frame count
-
-    # Loop through the video frames
-    while cap.isOpened():
-        # Read a frame from the video
-        success, frame = cap.read()
-
-        if success:
-            # Run YOLOv8 inference on the frame
-            results = model.predict(frame)
-
-            # Iterate over the detections
-            for result in results:
-                # Set the names attribute
-                result.names = {0: 'goat'}
-
-                # Extract bounding box coordinates
-                x1, y1, x2, y2 = result.xyxy[0]
-
-                # Crop the frame using the bounding box coordinates
-                cropped_frame = frame[int(y1):int(y2), int(x1):int(x2)]
-
-                # Save the cropped frame as a .jpg image
-                cv2.imwrite(f"frame_{frame_count}.jpg", cropped_frame)
-
-            frame_count += 1  # Increment frame count
-
-            # Display the original frame
-            cv2.imshow("Original Frame", frame)
-
-            # Break the loop if 'q' is pressed
-            if cv2.waitKey(1) & 0xFF == ord("q"):
-                break
-        else:
-            # Break the loop if the end of the video is reached
-            break
-
-    # Release the video capture object and close the display window
-    cap.release()
-    cv2.destroyAllWindows()
-
-
 # Load video for detection
-video = "./test_data/videos/pen_recording.mp4"
+cap = cv2.VideoCapture("./test_data/videos/pen_recording.mp4")
 
-predict_video(video_path=video)
+# define some constants
+CONFIDENCE_THRESHOLD = 0.5
+GREEN = (0, 255, 0)
+BLUE = (255, 0, 0)
+
+while True:
+    ret, frame = cap.read()
+    if not ret:
+        break
+
+    # Perform detection
+    detections = model.predict(frame)[0]
+    #print("Detections:", detections)
+    
+    # loop over the detections
+    for data in detections.boxes.data.tolist():
+        # extract the confidence (i.e., probability) associated with the detection
+        confidence = data[4]
+        print("Data: ", data)
+
+        # filter out weak detections by ensuring the 
+        # confidence is greater than the minimum confidence
+        if float(confidence) < CONFIDENCE_THRESHOLD:
+            continue
+
+        # if the confidence is greater than the minimum confidence,
+        # draw the bounding box on the frame
+        # [xmin, ymin, xmax, ymax, confidence_score, class_id]
+        xmin, ymin, xmax, ymax = int(data[0]), int(data[1]), int(data[2]), int(data[3])
+        cv2.rectangle(frame, (xmin, ymin) , (xmax, ymax), GREEN, 2)
+
+        # Add text to the frame
+        label = f"{model.names[int(data[5])]}: {confidence:.2f}"
+        cv2.putText(frame, label, (xmin, ymin - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, BLUE, 2)
+
+
+    # Display the frame with the detected objects
+    cv2.imshow("frame", frame)
+    if cv2.waitKey(1) & 0xFF == ord("s"):
+        break
+
+cap.release()
+cv2.destroyAllWindows()
