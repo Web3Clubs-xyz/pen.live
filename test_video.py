@@ -5,7 +5,6 @@ from ultralytics import YOLO
 # Load the trained model (replace 'path/to/model.pt' with the actual path)
 model = YOLO("cabra_best.pt")
 
-
 # Load video for detection
 cap = cv2.VideoCapture("./test_data/videos/pen_recording.mp4")
 
