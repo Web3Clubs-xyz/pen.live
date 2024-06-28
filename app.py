@@ -5,15 +5,20 @@ import cv2
 from flask import Flask, render_template, request, Response, session, redirect, url_for
 from flask_socketio import SocketIO
 import yt_dlp as youtube_dl
+from tracker import *
 
 
 model_object_detection = YOLO("cabra_best.pt")
 
 app = Flask(__name__)
 
+# Set the secret key to some random bytes. Keep this really secret!
 app.config['SECRET_KEY'] = 'secret!'
 socketio = SocketIO(app, async_mode='threading')
 stop_flag = False
+
+# Create a tracker object
+tracker = EuclideanDistTracker()
 
 class VideoStreaming(object):
     def __init__(self):
@@ -99,17 +104,61 @@ class VideoStreaming(object):
                     # frame = cv2.resize(frame, (500,500
                     # ))
                     # Detect objects
-                    frame = model_object_detection.predict(frame, conf=self._confidence/100)
+                    detections = model_object_detection.predict(frame, conf=self._confidence/100)[0]
+                    print("Detections:", detections.boxes)
+
+                    # Detections list
+                    detections_cords = []  # [x, y, w, h]
 
                     # Iterate over the detections and set the names attribute
-                    for fram in frame:
-                        fram.names = {0: 'goat'}
+                    #for fram in frame:
+                     #   fram.names = {0: 'goat'}
 
-                    frame = frame[0].plot()
-                    list_labels = ["goat"]
+                    #frame = frame[0].plot()
+                    #list_labels = ["goat"]
                     # labels_confidences
                     # Emit the label "goat" via SocketIO
-                    socketio.emit('label', list_labels)
+                    #socketio.emit('label', list_labels)
+
+                    # loop over the detections
+                    for data in detections.boxes.data.tolist():
+                        # extract the confidence (i.e., probability) associated with the detection
+                        confidence = data[4]
+
+                        # filter out weak detections by ensuring the
+                        
+                        # [xmin, ymin, xmax, ymax, confidence_score, class_id]
+                        xmin, ymin, xmax, ymax = int(data[0]), int(data[1]), int(data[2]), int(data[3])
+
+                        # Add the bounding box coordinates to the detections list
+                        detections_cords.append([xmin, ymin, xmax, ymax])
+
+                        # Save the bounding box coordinates as image
+                        crop_img = frame[ymin:ymax, xmin:xmax]
+                        # cv2.imwrite(f"tests/detections/images/cropped_image{np.random.randint(0, 100)}.jpg", crop_img)
+
+                        # if the confidence is greater than the minimum confidence,
+                        # draw the bounding box on the frame
+                        #cv2.rectangle(frame, (xmin, ymin), (xmax, ymax), (0, 255, 0), 2)
+
+                        # Add text to the frame
+                        #label = f"{model_object_detection.names[int(data[5])]}: {confidence:.2f}"
+                        #cv2.putText(frame, label, (xmin, ymin - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 0, 0), 2)
+
+                    # Goats tracking
+                    boxes_ids = tracker.update(detections_cords)
+                    for box_id in boxes_ids:
+                        x, y, w, h, id = box_id
+
+                        # Add ID to the frame
+                        cv2.putText(frame, str(id), (x, y - 15), cv2.FONT_HERSHEY_PLAIN, 2, (255, 0, 0), 2)
+                        cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 3)
+
+                        # Add INFO text to the frame
+                        #label = f"{model_object_detection.names[int(data[5])]}: {confidence:.2f}"
+                        #cv2.putText(frame, label, (xmin, ymin - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 0, 0), 2)
+
+
 
                 # frame = cv2.cvtColor(frame, cv2.COLOR_RGB2BGR)
                 frame = cv2.imencode(".jpg", frame)[1].tobytes()
