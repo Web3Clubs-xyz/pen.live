@@ -1,11 +1,11 @@
 from ultralytics import YOLO
-import time
 import numpy as np
 import cv2
 from flask import Flask, render_template, request, Response, session, redirect, url_for
 from flask_socketio import SocketIO
 import yt_dlp as youtube_dl
 from tracker import *
+from webcolors import rgb_to_name, CSS3_HEX_TO_NAMES
 
 
 model_object_detection = YOLO("cabra_best.pt")
@@ -64,6 +64,12 @@ class VideoStreaming(object):
     def detect(self, value):
         self._detect = bool(value)
 
+    def calculate_average_color(self, image, x, y, w, h):
+        # Extract the region of interest (ROI) and calculate the mean color
+        roi = image[y:y+h, x:x+w]
+        avg_color_per_row = np.average(roi, axis=0)
+        avg_color = np.average(avg_color_per_row, axis=0)
+        return tuple(map(int, avg_color))  # Convert to tuple of integers
 
     def show(self, url):
         print(url)
@@ -157,7 +163,33 @@ class VideoStreaming(object):
                         # Add INFO text to the frame
                         #label = f"{model_object_detection.names[int(data[5])]}: {confidence:.2f}"
                         #cv2.putText(frame, label, (xmin, ymin - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 0, 0), 2)
+                    
+                    # Add analytics to the frame
+                    number_of_goats = len(boxes_ids)
+                    table_x, table_y = 10, 10
+                    table_width, table_height = 300, 100 + (number_of_goats * 30)
 
+                    # Draw the background rectangle for the table
+                    cv2.rectangle(frame, (table_x, table_y), (table_x + table_width, table_y + table_height), (0, 0, 0), -1)
+
+                    # Add the number of goats detected
+                    cv2.putText(frame, f"ID - Height(px)", (table_x + 10, table_y + 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 255), 2)
+
+                    heights_dict = {} # {id: height}
+                    colors_dict = {} # {id: color}
+                    # Add the height of each goat detected
+                    for box_id in boxes_ids:
+                        x, y, w, h, id = box_id
+
+                        height = h - y
+                        color = self.calculate_average_color(frame, x, y, w, h)
+                        cv2.putText(frame, f"{id}: {height} px, Color: {color}", (x, y - 15), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2)
+                        cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 3)
+
+                        heights_dict[id] = height
+                        colors_dict[id] = color
+
+                    socketio.emit('label', heights_dict)
 
 
                 # frame = cv2.cvtColor(frame, cv2.COLOR_RGB2BGR)
