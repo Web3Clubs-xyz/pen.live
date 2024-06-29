@@ -3,9 +3,10 @@ import numpy as np
 import cv2
 from flask import Flask, render_template, request, Response, session, redirect, url_for
 from flask_socketio import SocketIO
+import webcolors
 import yt_dlp as youtube_dl
 from tracker import *
-from webcolors import rgb_to_name, CSS3_HEX_TO_NAMES
+from colors import CSS3_NAMES_TO_HEX
 
 
 model_object_detection = YOLO("cabra_best.pt")
@@ -70,6 +71,36 @@ class VideoStreaming(object):
         avg_color_per_row = np.average(roi, axis=0)
         avg_color = np.average(avg_color_per_row, axis=0)
         return tuple(map(int, avg_color))  # Convert to tuple of integers
+
+    def get_color_name(self, rgb):
+        try:
+            # Try to get the color name directly
+            color_name = webcolors.rgb_to_name(rgb)
+        except ValueError:
+            # If the color is not found, find the closest color
+            color_name = self.closest_color(rgb)
+        return color_name
+
+    def closest_color(self, requested_color):
+        min_distance = float('inf')
+        closest_color_name = None
+
+        # Iterate over all color names recognized by webcolors
+        for color_name in CSS3_NAMES_TO_HEX.keys():
+            # Convert color name to RGB
+            color_rgb = webcolors.hex_to_rgb(CSS3_NAMES_TO_HEX[color_name])
+
+            # Calculate Euclidean distance between requested_color and color_rgb
+            distance = sum((a - b) ** 2 for a, b in zip(requested_color, color_rgb))
+            
+            # Update closest_color_name if this color is closer
+            if distance < min_distance:
+                min_distance = distance
+                closest_color_name = color_name
+
+        return closest_color_name
+
+
 
     def show(self, url):
         print(url)
@@ -153,43 +184,32 @@ class VideoStreaming(object):
 
                     # Goats tracking
                     boxes_ids = tracker.update(detections_cords)
-                    for box_id in boxes_ids:
-                        x, y, w, h, id = box_id
+                    goat_info_dict = {}  # {id: {'height': height, 'color': color}}
 
-                        # Add ID to the frame
-                        cv2.putText(frame, str(id), (x, y - 15), cv2.FONT_HERSHEY_PLAIN, 2, (255, 0, 0), 2)
-                        cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 3)
-
-                        # Add INFO text to the frame
-                        #label = f"{model_object_detection.names[int(data[5])]}: {confidence:.2f}"
-                        #cv2.putText(frame, label, (xmin, ymin - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 0, 0), 2)
-                    
-                    # Add analytics to the frame
-                    number_of_goats = len(boxes_ids)
+                    # Prepare the table background
                     table_x, table_y = 10, 10
-                    table_width, table_height = 300, 100 + (number_of_goats * 30)
-
-                    # Draw the background rectangle for the table
+                    table_width, table_height = 550, 50 + (len(boxes_ids) * 30)
                     cv2.rectangle(frame, (table_x, table_y), (table_x + table_width, table_y + table_height), (0, 0, 0), -1)
+                    cv2.putText(frame, "ID - Height(px) - Color", (table_x + 10, table_y + 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 255), 2)
 
-                    # Add the number of goats detected
-                    cv2.putText(frame, f"ID - Height(px)", (table_x + 10, table_y + 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 255), 2)
-
-                    heights_dict = {} # {id: height}
-                    colors_dict = {} # {id: color}
-                    # Add the height of each goat detected
-                    for box_id in boxes_ids:
+                    # Add the height and color of each goat detected to the table
+                    for i, box_id in enumerate(boxes_ids):
                         x, y, w, h, id = box_id
 
                         height = h - y
                         color = self.calculate_average_color(frame, x, y, w, h)
-                        cv2.putText(frame, f"{id}: {height} px, Color: {color}", (x, y - 15), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2)
+                        color_name = self.get_color_name(color)
+                        goat_info_dict[id] = {'height': height, 'color': color_name}
+
+                        table_text = f"{id}: {height} px, Color: {color_name}"
+                        cv2.putText(frame, table_text, (table_x + 10, table_y + 70 + i * 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2)
+
+                        # Draw the bounding box and ID on the frame
                         cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 3)
+                        cv2.putText(frame, str(id), (x, y - 15), cv2.FONT_HERSHEY_PLAIN, 2, (255, 0, 0), 2)
 
-                        heights_dict[id] = height
-                        colors_dict[id] = color
-
-                    socketio.emit('label', heights_dict)
+                    # Emit goat_info_dict via SocketIO
+                    socketio.emit('goat_info', goat_info_dict)
 
 
                 # frame = cv2.cvtColor(frame, cv2.COLOR_RGB2BGR)
