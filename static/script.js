@@ -67,15 +67,30 @@ function stopProcess(message) {
 //This Code is used to Communicate b/w Client & Server via SOCKETIO
 var socket = io.connect('http://127.0.0.1:5000/');
 
-function appendToTerminal(message) {
+function appendToTerminal(heightsDict) {
     var terminal = document.getElementById("terminal");
-    var p = document.createElement("p");
-    p.innerHTML = `<table class="table table-striped text-center"><tr class="row"><td class="col-md-6">${message[0]}</td>
-                   <td  class="col-md-6">${message[0]}</td></tr></table>`;
-    terminal.appendChild(p);
-    terminal.scrollTop = terminal.scrollHeight;
 
+    // Clear existing content
+    terminal.innerHTML = '';
+
+    var title = document.createElement("h2");
+    title.innerHTML = "Tracking ID - Height";
+    terminal.appendChild(title);
+
+    var p = document.createElement("p");
+    var tableContent = '<table class="table table-striped text-center"><thead><tr><th>ID</th><th>Height (px)</th></tr></thead><tbody>';
+
+    for (var id in heightsDict) {
+        tableContent += `<tr><td class="col-md-6 text-center">${id}</td><td class="col-md-6 text-center">${heightsDict[id]}</td></tr>`;
+    }
+
+    tableContent += '</tbody></table>';
+    p.innerHTML = tableContent;
+    terminal.appendChild(p);
+
+    terminal.scrollTop = terminal.scrollHeight;
 }
+
 
 //Updating Terminal with Detected Objects
 socket.on("label", (data) => {
