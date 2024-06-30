@@ -231,7 +231,7 @@ export default function SideBar({ children }: any) {
         </Transition>
 
         {/* Static sidebar for desktop */}
-        <div className="hidden lg:fixed lg:inset-y-0  lg:flex lg:w-72 lg:flex-col lg:border-none">
+        <div className="hidden lg:fixed lg:inset-y-0  lg:flex lg:w-72 lg:flex-col lg:border-none bg-white">
           {/* Sidebar component, swap this element with another sidebar if you like */}
           <div className="flex grow flex-col gap-y-5 overflow-y-auto text-white px-6 pb-4">
             <div className="flex h-16 shrink-0 items-center"></div>
@@ -393,8 +393,8 @@ export default function SideBar({ children }: any) {
             </div>
           </div>
 
-          <main className="py-10 lg:pl-72">
-            <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <main className="py-5 lg:pl-72 bg-[#E6E8EF]">
+            <div className="mx-auto max-w-7xl px-2 ">
               {children}
             </div>
           </main>

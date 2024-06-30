@@ -48,7 +48,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
     <html lang="en" className="h-full bg-white">
       <body className={inter.className}>
         <div className="min-h-full">
-          <div className="   pb-32">
+          <div className="pb-32">
             <SideBar>{children}</SideBar>
           </div>
         </div>
