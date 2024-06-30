@@ -67,33 +67,40 @@ function stopProcess(message) {
 //This Code is used to Communicate b/w Client & Server via SOCKETIO
 var socket = io.connect('http://127.0.0.1:5000/');
 
-function appendToTerminal(heightsDict) {
+function appendToTerminal(data) {
+    var goatInfoDict = data.goat_info_dict;
+    var maxAnimalsCount = data.max_animals_count;
     var terminal = document.getElementById("terminal");
 
     // Clear existing content
     terminal.innerHTML = '';
 
     var title = document.createElement("h2");
-    title.innerHTML = "Tracking ID - Height";
+    title.innerHTML = "Tracking ID - Height - Color";
     terminal.appendChild(title);
 
     var p = document.createElement("p");
-    var tableContent = '<table class="table table-striped text-center"><thead><tr><th>ID</th><th>Height (px)</th></tr></thead><tbody>';
+    var tableContent = '<table class="table table-striped text-center"><thead><tr><th>ID</th><th>Height (px)</th><th>Color</th></tr></thead><tbody>';
 
-    for (var id in heightsDict) {
-        tableContent += `<tr><td class="col-md-6 text-center">${id}</td><td class="col-md-6 text-center">${heightsDict[id]}</td></tr>`;
+    for (var id in goatInfoDict) {
+        tableContent += `<tr><td class="col-md-4 text-center">${id}</td><td class="col-md-4 text-center">${goatInfoDict[id].height}</td><td class="col-md-4 text-center">${goatInfoDict[id].color}</td></tr>`;
     }
 
     tableContent += '</tbody></table>';
     p.innerHTML = tableContent;
     terminal.appendChild(p);
 
+    // Display total count of animals
+    var totalAnimals = document.createElement("h3");
+    totalAnimals.innerHTML = `Total Animals: ${maxAnimalsCount}`;
+    terminal.appendChild(totalAnimals);
+
     terminal.scrollTop = terminal.scrollHeight;
 }
 
 
 //Updating Terminal with Detected Objects
-socket.on("label", (data) => {
+socket.on("goat_info", (data) => {
     appendToTerminal(data);
 });
 
