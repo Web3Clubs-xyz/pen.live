@@ -1,11 +1,19 @@
+import Search from "@/components/common/input/search";
 import { SidebarNav } from "@/components/common/sidebar";
+import SideBar from "@/components/common/sidebar/sidebar";
+import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
+import { Web3Logo } from "@/constants/svg";
 import { Metadata } from "next";
+import { Inter } from "next/font/google";
 import Image from "next/image";
+import Link from "next/link";
+
+const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Forms",
-  description: "Advanced form example using react-hook-form and Zod.",
+  title: "Pen.Live Dashboard",
+  description: "Search Pens and listed animals collections",
 };
 
 const sidebarNavItems = [
@@ -37,22 +45,14 @@ interface DashboardLayoutProps {
 
 export default function DashboardLayout({ children }: DashboardLayoutProps) {
   return (
-    <>
-      <div className="hidden space-y-6 p-10 pb-16 md:block">
-        <div className="space-y-0.5">
-          <h2 className="text-2xl font-bold tracking-tight">Pen.Live</h2>
-          <p className="text-muted-foreground">
-            Search Pens and listed animals collections
-          </p>
+    <html lang="en" className="h-full bg-white">
+      <body className={inter.className}>
+        <div className="min-h-full">
+          <div className="   pb-32">
+            <SideBar>{children}</SideBar>
+          </div>
         </div>
-        <Separator className="my-6" />
-        <div className="flex flex-col space-y-8 lg:flex-row lg:space-x-12 lg:space-y-0">
-          <aside className="-mx-4 lg:w-1/5">
-            <SidebarNav items={sidebarNavItems} />
-          </aside>
-          <div className="flex-1 lg:max-w-2xl">{children}</div>
-        </div>
-      </div>
-    </>
+      </body>
+    </html>
   );
 }
