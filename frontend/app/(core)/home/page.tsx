@@ -2,6 +2,7 @@
 
 import DashboardOverview from "@/components/common/cards/dashboard-overview";
 import Geolocator from "@/components/common/maps/geolocator";
+import PenTableContainer from "@/components/common/table/PensTable/Pen";
 import { dashboardOverviewSource } from "@/helpers/dashboard-overview-source";
 import { CaretUp, File } from "@phosphor-icons/react";
 import Link from "next/link";
@@ -18,6 +19,7 @@ const DashboardPage = () => {
         })}
       </div>
       <Geolocator />
+      <PenTableContainer />
     </section>
   );
 };
