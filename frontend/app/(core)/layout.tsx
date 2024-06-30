@@ -1,0 +1,58 @@
+import { SidebarNav } from "@/components/common/sidebar";
+import { Separator } from "@/components/ui/separator";
+import { Metadata } from "next";
+import Image from "next/image";
+
+export const metadata: Metadata = {
+  title: "Forms",
+  description: "Advanced form example using react-hook-form and Zod.",
+};
+
+const sidebarNavItems = [
+  {
+    title: "Dashboard",
+    href: "/home",
+  },
+  {
+    title: "Account",
+    href: "/home/account",
+  },
+  {
+    title: "Support",
+    href: "/home/support",
+  },
+  {
+    title: "Notifications",
+    href: "/home/notifications",
+  },
+  {
+    title: "Setting",
+    href: "/home/setting",
+  },
+];
+
+interface DashboardLayoutProps {
+  children: React.ReactNode;
+}
+
+export default function DashboardLayout({ children }: DashboardLayoutProps) {
+  return (
+    <>
+      <div className="hidden space-y-6 p-10 pb-16 md:block">
+        <div className="space-y-0.5">
+          <h2 className="text-2xl font-bold tracking-tight">Pen.Live</h2>
+          <p className="text-muted-foreground">
+            Search Pens and listed animals collections
+          </p>
+        </div>
+        <Separator className="my-6" />
+        <div className="flex flex-col space-y-8 lg:flex-row lg:space-x-12 lg:space-y-0">
+          <aside className="-mx-4 lg:w-1/5">
+            <SidebarNav items={sidebarNavItems} />
+          </aside>
+          <div className="flex-1 lg:max-w-2xl">{children}</div>
+        </div>
+      </div>
+    </>
+  );
+}
