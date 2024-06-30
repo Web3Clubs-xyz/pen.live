@@ -21,6 +21,10 @@ stop_flag = False
 # Create a tracker object
 tracker = EuclideanDistTracker()
 
+# For counting the number of animals
+unique_animal_ids = set()
+max_animals_count = 0
+
 class VideoStreaming(object):
     def __init__(self):
         super(VideoStreaming, self).__init__()
@@ -104,6 +108,7 @@ class VideoStreaming(object):
 
     def show(self, url):
         print(url)
+        global unique_animal_ids, max_animals_count  # Explicitly declare global variables
         self._preview = False
         self._flipH = False
         self._detect = False
@@ -123,6 +128,7 @@ class VideoStreaming(object):
         url = info["url"]
 
         cap = cv2.VideoCapture(url)
+        frame_count = 0  # Add frame count to reset unique_animal_ids periodically
         while True:
             if self._preview:
                 if stop_flag:
@@ -188,14 +194,14 @@ class VideoStreaming(object):
 
                     # Prepare the table background
                     table_x, table_y = 10, 10
-                    table_width, table_height = 550, 50 + (len(boxes_ids) * 30)
+                    table_width, table_height = 550, 70 + (len(boxes_ids) * 30)
                     cv2.rectangle(frame, (table_x, table_y), (table_x + table_width, table_y + table_height), (0, 0, 0), -1)
                     cv2.putText(frame, "ID - Height(px) - Color", (table_x + 10, table_y + 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 255), 2)
 
                     # Add the height and color of each goat detected to the table
                     for i, box_id in enumerate(boxes_ids):
                         x, y, w, h, id = box_id
-
+                        unique_animal_ids.add(id)  # Add the detected ID to the set of unique IDs
                         height = h - y
                         color = self.calculate_average_color(frame, x, y, w, h)
                         color_name = self.get_color_name(color)
@@ -208,14 +214,26 @@ class VideoStreaming(object):
                         cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 3)
                         cv2.putText(frame, str(id), (x, y - 15), cv2.FONT_HERSHEY_PLAIN, 2, (255, 0, 0), 2)
 
-                    # Emit goat_info_dict via SocketIO
-                    socketio.emit('goat_info', goat_info_dict)
+                    current_count = len(unique_animal_ids)
+                    if current_count > max_animals_count:
+                        max_animals_count = current_count  # Update max count
+
+                    # Display total number of unique animals
+                    total_animals_text = f"Total Animals: {max_animals_count}"
+                    cv2.putText(frame, total_animals_text, (table_x + 10, table_y + table_height + 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 255), 2)
+
+                    # Emit goat_info_dict and max_animals_count via SocketIO
+                    socketio.emit('goat_info', {'goat_info_dict': goat_info_dict, 'max_animals_count': max_animals_count})
 
 
                 # frame = cv2.cvtColor(frame, cv2.COLOR_RGB2BGR)
                 frame = cv2.imencode(".jpg", frame)[1].tobytes()
                 yield (b'--frame\r\n'
                        b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
+                
+                frame_count += 1  # Increment frame count
+                if frame_count % 30 == 0:  # Reset unique_animal_ids every 30 frames (adjust as needed)
+                    unique_animal_ids.clear()  # Clear the set of unique IDs
             else:
                 snap = np.zeros((
                     1000,
