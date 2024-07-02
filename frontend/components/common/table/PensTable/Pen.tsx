@@ -11,6 +11,7 @@ const PenTableContainer = () => {
     return {
       id: item.id,
       name: item.name,
+      slug: item.slug,
       tvl: item.tvl,
       farmerRevenue: item.farmerRevenue,
       gardenRevenue: item.gardenRevenue,

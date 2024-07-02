@@ -4,6 +4,7 @@ export const penSource: PenType[] = [
   {
     id: "12",
     name: "Farmers Group Pens (FGP)",
+    slug: "farmers-group-pens-fgp",
     tvl: "$223.63m",
     farmerRevenue: "$223.63m",
     gardenRevenue: "$745.89m",
@@ -12,6 +13,7 @@ export const penSource: PenType[] = [
   {
     id: "12",
     name: "Local Herders Pens (LHP)",
+    slug: "local-herders-pens-lhp",
     tvl: "$63.41m",
     farmerRevenue: "$63.41m",
     gardenRevenue: "$63.41m",
@@ -20,6 +22,7 @@ export const penSource: PenType[] = [
   {
     id: "12",
     name: "Helga Community Pens (FGP)",
+    slug: "helga-community-pens-fgp",
     tvl: "$132.68m",
     farmerRevenue: "$132.68m",
     gardenRevenue: "$132.68m",
@@ -28,6 +31,7 @@ export const penSource: PenType[] = [
   {
     id: "12",
     name: "Masaku Livestock Farmers (FGP)",
+    slug: "masaku-livestock-farmers-fgp",
     tvl: "$745.89m",
     farmerRevenue: "$745.89m",
     gardenRevenue: "$745.89m",
@@ -36,6 +40,7 @@ export const penSource: PenType[] = [
   {
     id: "12",
     name: "Mwangi Family Pens (FGP)",
+    slug: "mwangi-family-pens-fgp",
     tvl: "$18.88m",
     farmerRevenue: "$18.88m",
     gardenRevenue: "$745.89m",
@@ -44,6 +49,7 @@ export const penSource: PenType[] = [
   {
     id: "12",
     name: "Local Herders Pens (FGP)",
+    slug: "local-herders-pens-fgp",
     tvl: "$745.89m",
     farmerRevenue: "$745.89m",
     gardenRevenue: "$745.89m",
@@ -52,6 +58,7 @@ export const penSource: PenType[] = [
   {
     id: "12",
     name: "Farmers Group Pens (FGP)",
+    slug: "farmers-group-pens-fgp",
     tvl: "$223.63m",
     farmerRevenue: "$223.63m",
     gardenRevenue: "$745.89m",
@@ -60,6 +67,7 @@ export const penSource: PenType[] = [
   {
     id: "12",
     name: "Local Herders Pens (LHP)",
+    slug: "local-herders-pens-lhp",
     tvl: "$63.41m",
     farmerRevenue: "$63.41m",
     gardenRevenue: "$63.41m",
@@ -68,6 +76,7 @@ export const penSource: PenType[] = [
   {
     id: "12",
     name: "Helga Community Pens (FGP)",
+    slug: "helga-community-pens-fgp",
     tvl: "$132.68m",
     farmerRevenue: "$132.68m",
     gardenRevenue: "$132.68m",
@@ -76,6 +85,7 @@ export const penSource: PenType[] = [
   {
     id: "12",
     name: "Masaku Livestock Farmers (FGP)",
+    slug: "masaku-livestock-farmers-fgp",
     tvl: "$745.89m",
     farmerRevenue: "$745.89m",
     gardenRevenue: "$745.89m",
@@ -84,17 +94,10 @@ export const penSource: PenType[] = [
   {
     id: "12",
     name: "Mwangi Family Pens (FGP)",
+    slug: "mwangi-family-pens-fgp",
     tvl: "$18.88m",
     farmerRevenue: "$18.88m",
     gardenRevenue: "$745.89m",
     platformRevenue: "$106.53m",
-  },
-  {
-    id: "12",
-    name: "Local Herders Pens (FGP)",
-    tvl: "$745.89m",
-    farmerRevenue: "$745.89m",
-    gardenRevenue: "$745.89m",
-    platformRevenue: "$2.19b",
   },
 ];

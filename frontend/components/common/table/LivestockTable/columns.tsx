@@ -2,47 +2,47 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { DataTableColumnHeader } from "../data-table-header";
 import { ColumnDef } from "@tanstack/react-table";
 import { useRouter } from "next/navigation";
-import { PenType } from "@/types/api-types";
+import { LivestockType } from "@/types/api-types";
 import Link from "next/link";
 
-export const PenColumns: ColumnDef<PenType>[] = [
+export const LivestockColumns: ColumnDef<LivestockType>[] = [
   {
     id: "select",
   },
   {
     accessorKey: "name",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Pen Name" />
+      <DataTableColumnHeader column={column} title="Livestock" />
     ),
     cell: ({ row, column, cell }) => (
-      <Link href={`/pen/${cell.row.original.slug}`} className="hover:underline">{cell.row.original.name}</Link>
+      <Link href={`/livestock/${cell.row.original.slug}`} className="hover:underline">{cell.row.original.name}</Link>
     ),
   },
   {
-    accessorKey: "tvl",
+    accessorKey: "currentPrice",
     header: ({ column }) => (
       <DataTableColumnHeader
         column={column}
-        title="TVL per Pen"
+        title="Current Price"
       />
     ),
   },
   {
-    accessorKey: "farmerRevenue",
+    accessorKey: "lastSellPrice",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Farmers Revenue" />
+      <DataTableColumnHeader column={column} title="Last Sell Price" />
     ),
   },
   {
-    accessorKey: "gardenRevenue",
+    accessorKey: "owner",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Guardians Revenue" />
+      <DataTableColumnHeader column={column} title="Owner" />
     ),
   },
   {
-    accessorKey: "platformRevenue",
+    accessorKey: "timeListed",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Platform Revenue" />
+      <DataTableColumnHeader column={column} title="TimeListed" />
     ),
   },
 ];
