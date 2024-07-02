@@ -13,6 +13,22 @@ import Image from "next/image";
 import DashboardOverview from "../cards/dashboard-overview";
 import { dashboardOverviewSource } from "@/helpers/dashboard-overview-source";
 import LivestockTableContainer from "../table/LivestockTable/Livestock";
+import AreaChartContainer from "../charts/AreaChartContainer";
+import { Fragment } from "react";
+
+const description = [
+  {
+    title: "Health",
+    answer:
+      "Excellent, regularly checked by a veterinarian",
+  },
+  {
+    title: "Age",
+    answer:
+      "3 years",
+  },
+  // More description...
+];
 
 export default function LivestockPage() {
   return (
@@ -90,14 +106,79 @@ export default function LivestockPage() {
             <b>5%</b>
           </span>
         </div>
-        <div className="flex mt-5">
-          <Image src={CowNFT} alt="" className="w-[500px] rounded-md" />
-          <article>
-            <h1 className="text-gradient-deep-blue">#8201</h1>
-            <h3>Owned by RapidCapital</h3>
-            <h4>current price</h4>
-            <h2 className="text-gradient-light-blue">$700</h2>
-          </article>
+        <div>
+          <div className="flex flex-col lg:flex-row mt-5 ">
+            <div>
+              <Image src={CowNFT} alt="" className="w-full lg:w-[500px] rounded-md" />
+              <div className="w-full my-1">
+                <article className="bg-white p-5 rounded-md w-full flex flex-col justify-between shadow-sm">
+                  <Tabs defaultValue="description" className="w-auto">
+                    <TabsList>
+                      <TabsTrigger value="description">Description</TabsTrigger>
+                      <TabsTrigger value="ownership">Ownership</TabsTrigger>
+                      <TabsTrigger value="stats">Statistics</TabsTrigger>
+                    </TabsList>
+                    <TabsContent value="description" className="w-full lg:w-[400px]">
+                      <h4>Discover the exceptional quality of our Freshian Arabian Female Dairy Cow! This premium breed combines the superior milk production of the Freshian with the hardy, adaptable nature of the Arabian. She is a perfect addition to any dairy farm, offering high yields of rich, creamy milk. Raised with the utmost care, she is healthy, well-tempered, and ready to enhance your herd. Don’t miss the chance to invest in this outstanding dairy cow and boost your farm’s productivity. Contact us today to learn more and arrange a visit!</h4>
+                      <dl className="">
+                        {description.map((faq) => (
+                          <Fragment key={faq.title}>
+                            <dt className="mt-10 font-medium text-gray-900">
+                              {faq.title}
+                            </dt>
+                            <dd className="prose prose-sm mt-2 max-w-none text-gray-500">
+                              <p>{faq.answer}</p>
+                            </dd>
+                          </Fragment>
+                        ))}
+                      </dl>
+                    </TabsContent>
+                    <TabsContent value="ownership" className="w-full lg:w-[400px]">
+                      <h2>Analytics</h2>
+                    </TabsContent>
+                    <TabsContent value="stats" className="w-full lg:w-[400px]">
+                      <h2>Activity</h2>
+                    </TabsContent>
+                  </Tabs>
+                </article>
+              </div>
+            </div>
+            <div className="w-full p-2">
+              <article className="bg-white p-5 rounded-md w-full flex flex-col justify-between shadow-sm">
+                <h1 className="text-gradient-deep-blue text-3xl font-bold">
+                  #8201
+                </h1>
+                <h3 className="text-lg">Owned by RapidCapital</h3>
+                <div>
+                  <p className="mt-2 text-sm text-gray-500">current price</p>
+                  <span className="flex">
+                    <h2 className="text-gradient-deep-blue text-3xl font-bold">
+                      0.23 ETH
+                    </h2>
+                    <p className="mt-2 text-lg   text-gray-500 font-semibold">
+                      $700
+                    </p>
+                  </span>
+                </div>
+                <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-2">
+                  <button
+                    type="button"
+                    className="flex w-full items-center justify-center rounded-md border border-transparent bg-indigo-600 px-8 py-3 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-50"
+                  >
+                    Buy Now
+                  </button>
+                  <button
+                    type="button"
+                    className="flex w-full items-center justify-center rounded-md border border-transparent bg-indigo-50 px-8 py-3 text-base font-medium text-indigo-700 hover:bg-indigo-100 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-50"
+                  >
+                    Make Offer
+                  </button>
+                </div>
+              </article>
+              <AreaChartContainer />
+              <AreaChartContainer />
+            </div>
+          </div>
         </div>
       </div>
     </div>
