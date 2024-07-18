@@ -1,20 +1,20 @@
 ## pen.live: Blockchain-Powered Livestock Marketplace with Real-Time Pen Analysis
 
-pen.live is a revolutionary platform that merges livestock ownership with the power of blockchain technology. It creates a secure and transparent tokenized marketplace for animals, where a unique NFT represents each animal. This NFT grants ownership and provides detailed tracking and knowledge of the individual animal through Precision Livestock Farming (PLF) technology.
+pen.live merges livestock ownership & management with the power of blockchain technology. It creates a secure and transparent tokenized marketplace for animals, where a unique NFT represents each animal. This NFT grants ownership and provides detailed tracking and knowledge of the individual animal through Precision Livestock Farming (PLF) technology. Precision Livestock Farming (PLF) technologies, conceived for optimizing farming processes, are developed to detect the physical and behavioral changes of animals continuously and in real-time.
 
 ### Guardian Network and Revenue Sharing
 Guardians, local to the farms, play a crucial role. They onboard farmers and stake an amount equal to the initial cost of the animal's token. Should an animal die or be lost, a moderator/inspector team determines the cause and liability. Based on their vote, the NFT holder may be compensated by slashing the guardian's stake. NFT holders pay for animal management, with revenue split transparently between the farmer, guardian, and pen.live.
 
 ### Comprehensive Platform with Live Pen Analysis
-The pen.live platform offers a wealth of information on its user-friendly homepage. You can track listed pens, total pens, platform value locked (TVL), total listed animals, trending animal TVL per pen, and top holders with their total realized and unrealized profit or loss (PnL). Additionally, you can see dedicated sections for farmer and guardian revenue, platform revenue, and a live stream with advanced features.
+You can track listed pens, total pens, platform value locked (TVL), total listed animals, trending animal TVL per pen, and top holders with their total realized and unrealized profit or loss (PnL). Additionally, you can see dedicated sections for farmer, NFT holder, guardian reports, revenues, and a live stream with PLF features.
 
-### Live Pen Analysis for Real-Time Insights
-The Live Pen Analysis Live Stream Web Application empowers farmers to gain real-time insights into their pens. Users can process live video streams and perform real-time pen analysis using the YOLO (You Only Look Once) model. This application utilizes cutting-edge technologies like Ultralytics YOLO for object tracking and Pytorch for analysis. A user-friendly interface allows for control over the video stream, including flipping the video horizontally and running object detection.
+### Live Pen Analysis for Real-Time Insights & Reports
+The Live Pen Analysis Live Stream Web Application empowers farmers and investors(NFT holders) to gain real-time insights into their pens and livestock. Users can process live video streams and perform real-time pen analysis using the YOLO (You Only Look Once) model. This application utilizes Ultralytics YOLO for object tracking and Pytorch for analysis. A user-friendly interface allows for control over the video stream, including flipping the video horizontally and running object detection. Metrics include: Animal growth rate(weight/height), feeding habits, disease detection, pregnancy + offspring linking etc
 
 ### Secure Wallet Integration and Streamlined Fee System
-The application seamlessly integrates with a secure farmer's wallet system. Upon registration, farmers can connect their wallets to the application for pen monitoring. A small fee deducted from the wallet facilitates real-time pen analysis and connects farmers with potential buyers through the pen.live platform.
+Upon registration by local Guardian, farmers can connect their wallets to mint individual animal NFTs, and connects with potential buyers through the pen.live platform. We're intergrating offramp of Revenue for farmers, investors and guardinans. 
 
-This unique combination of secure blockchain ownership, real-time animal tracking, and advanced pen analysis empowers farmers with unprecedented control and transparency while offering investors a new and exciting way to participate in the livestock market.
+This unique combination of secure blockchain ownership, real-time animal tracking, and advanced pen analysis empowers farmers with scientific livestock management while offering investors a new and exciting way to participate in the livestock market.
 
 
 ## Features
@@ -24,7 +24,7 @@ This unique combination of secure blockchain ownership, real-time animal trackin
 - Allow users to toggle preview, flip the video horizontally, and run object detection.
 - Adjust object detection confidence threshold using a slider.
 - Display real-time object detection results on the live stream.
-- Track listed pens, total pens, platform value locked (TVL), total listed animals, and trending animal TVL per pen.
+- Livestock Reports & Tracking listed pens, total pens, platform value locked (TVL), total listed animals, and trending animal TVL per pen.
 - View top holders with their total realized and unrealized profit or loss (PnL).
 - Access dedicated sections for farmer and guardian revenue, platform revenue, and a live stream with advanced features.
 - Integrate seamlessly with a secure farmer's wallet system for pen monitoring and potential buyer connections.
@@ -109,6 +109,7 @@ The application provides the following control features:
 ## Technologies Used
 
 - Python 3
+- Solidity
 - Flask (Web Framework)
 - OpenCV (cv2) (Video Stream Processing)
 - YOLOv8 (You Only Look Once) Model for Object Detection
